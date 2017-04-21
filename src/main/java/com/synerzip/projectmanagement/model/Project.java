@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "project_information")
+@Table(name = "project")
 public class Project {
 
 	@Id
@@ -20,10 +20,6 @@ public class Project {
 	private String projectDescription;
 	@Column(name = "project_feature")
 	private String projectFeature;
-
-	public Project() {
-
-	}
 
 	@Override
 	public String toString() {

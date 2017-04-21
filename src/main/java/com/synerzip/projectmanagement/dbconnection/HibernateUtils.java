@@ -9,13 +9,20 @@ import org.hibernate.SessionFactory;
 import com.synerzip.projectmanagement.model.Project;
 
 public class HibernateUtils {
-	public static Session getSession() {
-		Configuration con = new Configuration().configure().addAnnotatedClass(
-				Project.class);
-		ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(
-				con.getProperties()).buildServiceRegistry();
 
-		SessionFactory sf = con.buildSessionFactory(registry);
+	static Configuration con;
+	static ServiceRegistry registry;
+	static SessionFactory sf;
+	static {
+		System.out.println("started initialising hibernate config");
+		con = new Configuration().configure().addAnnotatedClass(Project.class);
+		registry = new ServiceRegistryBuilder().applySettings(con.getProperties()).buildServiceRegistry();
+		sf = con.buildSessionFactory(registry);
+		System.out.println("completed with hibernate config init");
+	}
+
+	public static Session getSession() {
 		return sf.openSession();
+
 	}
 }

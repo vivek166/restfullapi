@@ -13,23 +13,23 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 
 import com.synerzip.projectmanagement.model.Project;
-import com.synerzip.projectmanagement.services.ProjectService;
+import com.synerzip.projectmanagement.services.ProjectServiceImplementation;
 
 @Path("/project")
-public class ProjectSystem {
+public class ProjectController {
 
-	ProjectService service = new ProjectService();
+	ProjectServiceImplementation service = new ProjectServiceImplementation();
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Project> getAllProject() {
+	public String getAllProject() {
 		return service.getAllProject();
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{projectId}")
-	public Project getProject(@PathParam("projectId") long projectId) {
+	public String getProject(@PathParam("projectId") long projectId) {
 		return service.getProject(projectId);
 	}
 

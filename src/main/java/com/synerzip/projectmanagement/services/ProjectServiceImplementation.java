@@ -5,37 +5,42 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import com.google.gson.Gson;
 import com.synerzip.projectmanagement.dbconnection.HibernateUtils;
 import com.synerzip.projectmanagement.model.Project;
+import com.synerzip.projectmanagement.responce.ResponseHandler;
 
-public class ProjectService {
+public class ProjectServiceImplementation implements ProjectServices {
 
-	public Project getProject(long projectId) {
+	ResponseHandler handle=new ResponseHandler();
+	Gson gson =new Gson();
+	
+	public String getProject(long projectId) {
 
+		
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			Project s = (Project) session.get(Project.class, projectId);
+			Project newProject = (Project) session.get(Project.class, projectId);
 			tx.commit();
-			return s;
+			return gson.toJson(newProject.toString());
 		} catch (Exception e) {
-			return null;
+			return handle.getErrorResponce();
 		} finally {
 			session.close();
 		}
 	}
 
-	public List<Project> getAllProject() {
+	public String getAllProject() {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session
-					.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session.createQuery("from com.synerzip.projectmanagement.model.Project");
 			List<Project> projects = query.list();
-			return projects;
+			return gson.toJson(projects.toString());
 		} catch (Exception e) {
-			return null;
+			return handle.getAllErrorResponce();
 		} finally {
 			session.close();
 		}
@@ -50,9 +55,9 @@ public class ProjectService {
 		try {
 			session.save(project);
 			tx.commit();
-			return "data saved";
+			return gson.toJson(project.toString());
 		} catch (Exception e) {
-			return "something went wrong";
+			return handle.postErrorResponce();
 		} finally {
 			session.close();
 		}
@@ -66,17 +71,15 @@ public class ProjectService {
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String hql = "DELETE FROM Project WHERE project_id = " + projectId
-					+ "";
-			Query query = session.createQuery(hql);
-			int status = query.executeUpdate();
+			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId+ "";
+			Query query = session.createQuery(deleteQuery);
+			query.executeUpdate();
 			tx.commit();
-			System.out.println(status);
 		} catch (Exception e) {
-			return "something went wrong";
+			return handle.deleteErrorResponce();
 		} finally {
 			session.close();
 		}
-		return "record deleted";
+		return gson.toJson("record deleted");
 	}
 }
