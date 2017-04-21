@@ -17,7 +17,6 @@ public class ProjectServiceImplementation implements ProjectServices {
 	
 	public String getProject(long projectId) {
 
-		
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
@@ -49,7 +48,6 @@ public class ProjectServiceImplementation implements ProjectServices {
 	public String addProject(Project project) {
 
 		Session session = HibernateUtils.getSession();
-
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
@@ -61,13 +59,11 @@ public class ProjectServiceImplementation implements ProjectServices {
 		} finally {
 			session.close();
 		}
-
 	}
 
 	public String deleteProject(long projectId) {
 
 		Session session = HibernateUtils.getSession();
-
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
@@ -81,5 +77,23 @@ public class ProjectServiceImplementation implements ProjectServices {
 			session.close();
 		}
 		return gson.toJson("record deleted");
+	}
+
+	public String updateProject(Project project, long projectId) {
+		Session session = HibernateUtils.getSession();
+		org.hibernate.Transaction tx = session.beginTransaction();
+
+		try {
+			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId+ "";
+			Query query = session.createQuery(deleteQuery);
+			query.executeUpdate();
+			session.save(project);
+			tx.commit();
+			return gson.toJson(project.toString());
+		} catch (Exception e) {
+			return handle.putErrorResponce();
+		} finally {
+			session.close();
+		}
 	}
 }

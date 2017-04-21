@@ -4,11 +4,13 @@ import com.synerzip.projectmanagement.model.Project;
 
 public interface ProjectServices {
 
-	public abstract String getProject(long projectId);
+	  String getProject(long projectId);
 	
-	public abstract String getAllProject();
+	  String getAllProject();
 	
-	public abstract String  addProject(Project project);
+	  String  addProject(Project project);
 	
-	public abstract String deleteProject(long projectId);
+	  String deleteProject(long projectId);
+	
+	  String updateProject(Project project , long projectId);
 }

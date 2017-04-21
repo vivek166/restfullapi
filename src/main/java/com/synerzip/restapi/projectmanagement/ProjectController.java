@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 
 import com.synerzip.projectmanagement.model.Project;
@@ -45,5 +46,13 @@ public class ProjectController {
 	@Path("{projectId}")
 	public String deleteProject(@PathParam("projectId") long projectId) {
 		return service.deleteProject(projectId);
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("{projectId}")
+	public String updateProject(Project project, @PathParam("projectId") long projectId) {
+		return service.updateProject(project, projectId);
 	}
 }
