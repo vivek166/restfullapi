@@ -6,49 +6,43 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.google.gson.Gson;
 import com.synerzip.projectmanagement.dbconnection.HibernateUtils;
 import com.synerzip.projectmanagement.model.Project;
-import com.synerzip.projectmanagement.responce.ResponseHandler;
 
 public class ProjectServiceImplementation implements ProjectServices {
 
-	ResponseHandler handle = new ResponseHandler();
-	Gson gson = new Gson();
-
-	public String getProject(long projectId) {
+	public Project getProject(long projectId) {
 
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			Project newProject = (Project) session
-					.get(Project.class, projectId);
+			Project project = (Project) session.get(Project.class, projectId);
 			tx.commit();
-			return gson.toJson(newProject.toString());
+			return project;
 		} catch (Exception e) {
-			return handle.getErrorResponce();
+			return null;
 		} finally {
 			session.close();
 		}
 	}
 
-	public String getAllProject() {
+	public List<Project> getAllProject() {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session
-					.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session.createQuery("from com.synerzip.projectmanagement.model.Project");
+			query.setMaxResults(5);
 			List<Project> projects = query.list();
-			return gson.toJson(projects.toString());
+			return projects;
 		} catch (Exception e) {
-			return handle.getAllErrorResponce();
+			return null;
 		} finally {
 			session.close();
 		}
 	}
 
-	public String addProject(Project project) {
+	public Project addProject(Project project) {
 
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
@@ -56,9 +50,9 @@ public class ProjectServiceImplementation implements ProjectServices {
 		try {
 			session.save(project);
 			tx.commit();
-			return gson.toJson(project.toString());
+			return project;
 		} catch (Exception e) {
-			return handle.postErrorResponce();
+			return null;
 		} finally {
 			session.close();
 		}
@@ -70,52 +64,51 @@ public class ProjectServiceImplementation implements ProjectServices {
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = "
-					+ projectId + "";
+			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId + "";
 			Query query = session.createQuery(deleteQuery);
 			query.executeUpdate();
 			tx.commit();
 		} catch (Exception e) {
-			return handle.deleteErrorResponce();
+			return null;
 		} finally {
 			session.close();
 		}
-		return gson.toJson("record deleted");
+		return "record deleted";
 	}
 
-	public String updateProject(Project project, long projectId) {
+	public Project updateProject(Project project, long projectId) {
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = "
-					+ projectId + "";
+			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId + "";
 			Query query = session.createQuery(deleteQuery);
 			query.executeUpdate();
 			session.save(project);
 			tx.commit();
-			return gson.toJson(project.toString());
+			return project;
 		} catch (Exception e) {
-			return handle.putErrorResponce();
+			return null;
 		} finally {
 			session.close();
 		}
 	}
 
-	public String getAllProjectPaginated(int start, int size) {
+	public List<Project> getProjects(int start , int size) {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session
-					.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session.createQuery("from com.synerzip.projectmanagement.model.Project");
+			query.setFirstResult(start);
+			query.setMaxResults(start + size);
 			List<Project> projects = query.list();
 			ArrayList<Project> projectList = new ArrayList<>(projects);
-			if(start+size > projectList.size())
-				return projectList.toString();
+			if (start + size > projectList.size())
+				return projectList;
 			else
-				return projectList.subList(start, size).toString();
+				return projectList.subList(start, size + start);
 		} catch (Exception e) {
-			return handle.getPaginateError();
+			return null;
 		}
 	}
 }
