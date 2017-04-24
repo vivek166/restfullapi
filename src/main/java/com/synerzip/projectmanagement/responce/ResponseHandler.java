@@ -35,4 +35,9 @@ public class ResponseHandler {
 		String error = "{'message':'record not found','error_code':'304'}";
 		return gson.toJson(error);
 	}
+	
+	public String getPaginateError() {
+		String error = "{'message':'value must be positive','error_code':'101'}";
+		return gson.toJson(error);
+	}
 }

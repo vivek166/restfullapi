@@ -1,5 +1,6 @@
 package com.synerzip.projectmanagement.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -12,16 +13,17 @@ import com.synerzip.projectmanagement.responce.ResponseHandler;
 
 public class ProjectServiceImplementation implements ProjectServices {
 
-	ResponseHandler handle=new ResponseHandler();
-	Gson gson =new Gson();
-	
+	ResponseHandler handle = new ResponseHandler();
+	Gson gson = new Gson();
+
 	public String getProject(long projectId) {
 
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			Project newProject = (Project) session.get(Project.class, projectId);
+			Project newProject = (Project) session
+					.get(Project.class, projectId);
 			tx.commit();
 			return gson.toJson(newProject.toString());
 		} catch (Exception e) {
@@ -35,7 +37,8 @@ public class ProjectServiceImplementation implements ProjectServices {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session
+					.createQuery("from com.synerzip.projectmanagement.model.Project");
 			List<Project> projects = query.list();
 			return gson.toJson(projects.toString());
 		} catch (Exception e) {
@@ -67,7 +70,8 @@ public class ProjectServiceImplementation implements ProjectServices {
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId+ "";
+			String deleteQuery = "DELETE FROM Project WHERE project_id = "
+					+ projectId + "";
 			Query query = session.createQuery(deleteQuery);
 			query.executeUpdate();
 			tx.commit();
@@ -84,7 +88,8 @@ public class ProjectServiceImplementation implements ProjectServices {
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId+ "";
+			String deleteQuery = "DELETE FROM Project WHERE project_id = "
+					+ projectId + "";
 			Query query = session.createQuery(deleteQuery);
 			query.executeUpdate();
 			session.save(project);
@@ -94,6 +99,23 @@ public class ProjectServiceImplementation implements ProjectServices {
 			return handle.putErrorResponce();
 		} finally {
 			session.close();
+		}
+	}
+
+	public String getAllProjectPaginated(int start, int size) {
+		Session session = HibernateUtils.getSession();
+		session.beginTransaction();
+		try {
+			Query query = session
+					.createQuery("from com.synerzip.projectmanagement.model.Project");
+			List<Project> projects = query.list();
+			ArrayList<Project> projectList = new ArrayList<>(projects);
+			if(start+size > projectList.size())
+				return projectList.toString();
+			else
+				return projectList.subList(start, size).toString();
+		} catch (Exception e) {
+			return handle.getPaginateError();
 		}
 	}
 }

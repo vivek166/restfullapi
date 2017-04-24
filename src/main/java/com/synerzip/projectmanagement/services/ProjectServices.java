@@ -13,4 +13,6 @@ public interface ProjectServices {
 	  String deleteProject(long projectId);
 	
 	  String updateProject(Project project , long projectId);
+	  
+	  String getAllProjectPaginated(int start, int size);
 }
