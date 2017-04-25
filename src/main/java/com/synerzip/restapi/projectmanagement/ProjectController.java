@@ -23,13 +23,6 @@ public class ProjectController {
 
 	ProjectServiceImplementation service = new ProjectServiceImplementation();
 
-	/*
-	 * @GET
-	 * 
-	 * @Produces(MediaType.APPLICATION_JSON) public String getAllProject() {
-	 * return service.getAllProject(); }
-	 */
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{projectId}")
@@ -39,7 +32,7 @@ public class ProjectController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Project> getProjectPaginated(@DefaultValue("1") @QueryParam("start") int start, @DefaultValue("5") @QueryParam("size") int size) {
+	public List<Project> getProjects(@DefaultValue("1") @QueryParam("start") int start, @DefaultValue("5") @QueryParam("size") int size) {
 		System.out.println(start + "" + size);
 		return service.getProjects(start, size);
 	}

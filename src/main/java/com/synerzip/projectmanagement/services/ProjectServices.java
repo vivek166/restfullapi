@@ -3,6 +3,7 @@ package com.synerzip.projectmanagement.services;
 import java.util.List;
 
 import com.synerzip.projectmanagement.model.Project;
+import com.synerzip.projectmanagement.responce.ProjectException;
 
 public interface ProjectServices {
 

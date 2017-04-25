@@ -64,8 +64,9 @@ public class ProjectServiceImplementation implements ProjectServices {
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId + "";
+			String deleteQuery = "DELETE FROM Project WHERE project_id = :project_id";
 			Query query = session.createQuery(deleteQuery);
+			query.setParameter("project_id", projectId);
 			query.executeUpdate();
 			tx.commit();
 		} catch (Exception e) {
@@ -81,8 +82,9 @@ public class ProjectServiceImplementation implements ProjectServices {
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = " + projectId + "";
+			String deleteQuery = "DELETE FROM Project WHERE project_id = :project_id";
 			Query query = session.createQuery(deleteQuery);
+			query.setParameter("project_id", projectId);
 			query.executeUpdate();
 			session.save(project);
 			tx.commit();
