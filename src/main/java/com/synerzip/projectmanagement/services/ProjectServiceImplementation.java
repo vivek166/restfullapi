@@ -3,35 +3,40 @@ package com.synerzip.projectmanagement.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.synerzip.projectmanagement.dbconnection.HibernateUtils;
 import com.synerzip.projectmanagement.model.Project;
+import com.synerzip.projectmanagement.responce.RecordNotFoundException;
 
 public class ProjectServiceImplementation implements ProjectServices {
 
-	public Project getProject(long projectId) {
+	public Response getProject(long projectId) throws RecordNotFoundException {
 
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
-
+		Project project=new Project();
 		try {
-			Project project = (Project) session.get(Project.class, projectId);
+			project = (Project) session.get(Project.class, projectId);
 			tx.commit();
-			return project;
 		} catch (Exception e) {
-			return null;
+			throw new RecordNotFoundException("record not found");
 		} finally {
 			session.close();
 		}
+		return Response.ok().entity(project).build();
 	}
 
 	public List<Project> getAllProject() {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session
+					.createQuery("from com.synerzip.projectmanagement.model.Project");
 			query.setMaxResults(5);
 			List<Project> projects = query.list();
 			return projects;
@@ -96,11 +101,12 @@ public class ProjectServiceImplementation implements ProjectServices {
 		}
 	}
 
-	public List<Project> getProjects(int start , int size) {
+	public List<Project> getProjects(int start, int size) {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session
+					.createQuery("from com.synerzip.projectmanagement.model.Project");
 			query.setFirstResult(start);
 			query.setMaxResults(start + size);
 			List<Project> projects = query.list();
