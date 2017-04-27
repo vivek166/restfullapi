@@ -1,9 +1,13 @@
 package com.synerzip.projectmanagement.model;
 
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import com.synerzip.employee.model.Employee;
 
 @Entity
 @Table(name = "project")
@@ -21,12 +25,22 @@ public class Project {
 	@Column(name = "project_feature")
 	private String projectFeature;
 
-	@Override
+	@ManyToMany(targetEntity = Employee.class)
+	@JoinTable(name = "project_employee")
+	private Set<Employee> employee;
+
+	public Set<Employee> getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Set<Employee> employee) {
+		this.employee = employee;
+	}
+
 	public String toString() {
-		return "Project [projectId=" + projectId + ", projectTitle="
-				+ projectTitle + ", technologyUsed=" + technologyUsed
-				+ ", projectDescription=" + projectDescription
-				+ ", projectFeature=" + projectFeature + "]";
+		return "Project [projectId=" + projectId + ", projectTitle=" + projectTitle + ", technologyUsed="
+				+ technologyUsed + ", projectDescription=" + projectDescription + ", projectFeature=" + projectFeature
+				+ "]";
 	}
 
 	public long getProjectId() {

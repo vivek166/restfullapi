@@ -1,39 +1,40 @@
-package com.synerzip.projectmanagement.services;
+package com.synerzip.employee.servece;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.synerzip.projectmanagement.dbconnection.HibernateUtils;
-import com.synerzip.projectmanagement.model.Project;
-public class ProjectServiceImplementation implements ProjectServices {
-	public Project[] getProject(long projectId)  {
+import com.synerzip.employee.dbconnection.HibernateUtils;
+import com.synerzip.employee.model.Employee;
+
+public class EmployeeServicesImpl implements EmployeeServices {
+
+	public Employee getEmployee(int empId) {
+
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
-		Project[] project;
+
 		try {
-			project = (Project[]) session.get(Project.class, projectId);
+			Employee employee = (Employee) session.get(Employee.class, empId);
 			tx.commit();
+			return employee;
 		} catch (Exception e) {
 			return null;
 		} finally {
 			session.close();
 		}
-		return project;
 	}
 
-	public List<Project> getAllProject() {
+	public List<Employee> getAllEmployee() {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session
-					.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session.createQuery("from com.synerzip.employee.model.Employee");
 			query.setMaxResults(5);
-			List<Project> projects = query.list();
-			return projects;
+			List<Employee> employees = query.list();
+			return employees;
 		} catch (Exception e) {
 			return null;
 		} finally {
@@ -41,15 +42,15 @@ public class ProjectServiceImplementation implements ProjectServices {
 		}
 	}
 
-	public Project addProject(Project project) {
+	public Employee addEmployee(Employee employee) {
 
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			session.save(project);
+			session.save(employee);
 			tx.commit();
-			return project;
+			return employee;
 		} catch (Exception e) {
 			return null;
 		} finally {
@@ -57,15 +58,15 @@ public class ProjectServiceImplementation implements ProjectServices {
 		}
 	}
 
-	public String deleteProject(long projectId) {
+	public String deleteEmployee(int empId) {
 
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = :project_id";
+			String deleteQuery = "DELETE FROM Employee WHERE emp_id = :emp_id";
 			Query query = session.createQuery(deleteQuery);
-			query.setParameter("project_id", projectId);
+			query.setParameter("emp_id", empId);
 			query.executeUpdate();
 			tx.commit();
 		} catch (Exception e) {
@@ -76,18 +77,18 @@ public class ProjectServiceImplementation implements ProjectServices {
 		return "record deleted";
 	}
 
-	public Project updateProject(Project project, long projectId) {
+	public Employee updateEmployee(Employee employee, int empId) {
 		Session session = HibernateUtils.getSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 
 		try {
-			String deleteQuery = "DELETE FROM Project WHERE project_id = :project_id";
+			String deleteQuery = "DELETE FROM Employee WHERE emp_id = :emp_id";
 			Query query = session.createQuery(deleteQuery);
-			query.setParameter("project_id", projectId);
+			query.setParameter("emp_id", empId);
 			query.executeUpdate();
-			session.save(project);
+			session.save(employee);
 			tx.commit();
-			return project;
+			return employee;
 		} catch (Exception e) {
 			return null;
 		} finally {
@@ -95,20 +96,19 @@ public class ProjectServiceImplementation implements ProjectServices {
 		}
 	}
 
-	public List<Project> getProjects(int start, int size) {
+	public List<Employee> getEmployees(int start, int size) {
 		Session session = HibernateUtils.getSession();
 		session.beginTransaction();
 		try {
-			Query query = session
-					.createQuery("from com.synerzip.projectmanagement.model.Project");
+			Query query = session.createQuery("from com.synerzip.employee.model.Employee");
 			query.setFirstResult(start);
 			query.setMaxResults(start + size);
-			List<Project> projects = query.list();
-			ArrayList<Project> projectList = new ArrayList<>(projects);
-			if (start + size > projectList.size())
-				return projectList;
+			List<Employee> employees = query.list();
+			ArrayList<Employee> empList = new ArrayList<>(employees);
+			if (start + size > empList.size())
+				return empList;
 			else
-				return projectList.subList(start, size + start);
+				return empList.subList(start, size + start);
 		} catch (Exception e) {
 			return null;
 		}

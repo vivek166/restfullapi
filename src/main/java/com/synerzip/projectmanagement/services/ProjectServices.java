@@ -1,14 +1,10 @@
 package com.synerzip.projectmanagement.services;
 
 import java.util.List;
-
-import javax.ws.rs.core.Response;
-
 import com.synerzip.projectmanagement.model.Project;
-import com.synerzip.projectmanagement.responce.RecordNotFoundException;
 public interface ProjectServices {
 
-	Response getProject(long projectId) throws RecordNotFoundException;
+	Project[] getProject(long projectId);
 
 	List<Project> getAllProject();
 
